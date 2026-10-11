@@ -1,24 +1,43 @@
 # murmur
 
-Local push-to-talk dictation for macOS. Press a hotkey, speak, press it again, and the text from a local speech model is pasted at your cursor. Nothing leaves your Mac.
+murmur is a push-to-talk dictation app for macOS. It runs a speech model on your Mac. No audio leaves your computer.
 
-## Install (Apple Silicon, macOS 14+)
+Press a hotkey. Speak. Press the hotkey again. The app pastes the text at your cursor.
 
-1. Download `murmur-0.1-arm64.zip` from Releases and unzip it.
-2. Move `murmur.app` to Applications.
-3. The app is not notarized yet. On first launch, right-click it, choose Open, then Open again. If macOS still blocks it, run `xattr -dr com.apple.quarantine /Applications/murmur.app`.
-4. Allow Microphone and Accessibility when asked. Accessibility is needed to paste.
+## Install
+
+You need an Apple Silicon Mac with macOS 14 or newer.
+
+1. Download `murmur-0.1-arm64.zip` from the [Releases page](../../releases).
+2. Unzip the file. Move `murmur.app` to Applications.
+3. Right-click the app. Choose Open. Choose Open again.
+4. Allow Microphone and Accessibility when macOS asks.
+
+The app is not notarized. If macOS blocks it, run this command:
+
+```
+xattr -dr com.apple.quarantine /Applications/murmur.app
+```
 
 ## Use
 
-Click into a text field, press **Ctrl+Option+Space**, speak, press it again. A small pill shows Listening (live voice bars), Transcribing and Pasted.
+1. Click in a text field.
+2. Press **Ctrl+Option+Space**. Speak.
+3. Press **Ctrl+Option+Space** again.
+
+A small pill shows the state: Listening (live voice bars), Transcribing, Pasted.
 
 ## Build from source
 
 ```
-scripts/fetch-deps.sh     # whisper.cpp framework and base.en model
-./build.sh                # builds murmur.app (signed with a local "murmur-dev" certificate)
-./build.sh --dist         # also writes dist/murmur-<version>-arm64.zip
+scripts/fetch-deps.sh
+./build.sh
 ```
 
-Uses whisper.cpp (base.en, Metal) and KeyboardShortcuts. Needs only the Xcode Command Line Tools.
+You need the Xcode Command Line Tools. You do not need full Xcode.
+
+## More
+
+- [How we built it](docs/HOW_IT_WAS_BUILT.md)
+- [Guide for AI agents](AGENTS.md)
+- Speech model: [whisper.cpp](https://github.com/ggml-org/whisper.cpp), `base.en`. Hotkey: [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts). Licence: MIT.

@@ -47,7 +47,10 @@ if ! otool -l "$APP/Contents/MacOS/murmur" | grep -q "@executable_path/../Framew
   install_name_tool -add_rpath @executable_path/../Frameworks "$APP/Contents/MacOS/murmur"
 fi
 
-codesign --force --deep -s murmur-dev "$APP"
+# Sign with the "murmur-dev" certificate when present, else ad hoc (Accessibility must then be granted again after each rebuild).
+SIGN_ID="${MURMUR_SIGN_ID:-murmur-dev}"
+security find-identity -v -p codesigning | grep -q "$SIGN_ID" || SIGN_ID=-
+codesign --force --deep -s "$SIGN_ID" "$APP"
 echo "$(pwd)/$APP"
 
 # ./build.sh --dist  ->  dist/murmur-<version>-arm64.zip (ready to share)
