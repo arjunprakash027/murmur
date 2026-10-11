@@ -22,7 +22,7 @@ final class Controller {
         switch state {
         case .idle:
             state = .recording
-            HUD.shared.show("Listening", color: .systemRed)
+            HUD.shared.showListening()
             recorder.start()
         case .recording:
             let samples = recorder.stop()

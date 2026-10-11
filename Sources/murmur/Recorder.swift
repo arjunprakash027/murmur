@@ -27,6 +27,7 @@ final class Recorder {
             guard let self else { return }
             let out = Self.convert(buffer: buf, using: conv)
             self.lock.lock(); self.samples += out; self.lock.unlock()
+            if !out.isEmpty { HUD.shared.level((out.reduce(0) { $0 + $1 * $1 } / Float(out.count)).squareRoot()) }
         }
         do { try engine.start() } catch { print("recorder: engine start failed: \(error)") }
     }
