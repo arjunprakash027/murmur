@@ -18,15 +18,40 @@ More diagrams: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Speed
 
-Tested on a base MacBook Air M1 with 8 GB of RAM. The model runs on the GPU.
+murmur is fast on low-end hardware. We tested it on a base MacBook Air M1 with 8 GB of RAM.
 
-| Speech length | Time to text |
+| Item | Value |
 |---|---|
-| 2.5 s | 205 ms |
-| 7.3 s | 307 ms |
-| 20.9 s | 616 ms |
+| Machine | MacBook Air (M1, 2020), 8 GB RAM, macOS 26.7.2, mains power |
+| Software | murmur 0.1, whisper.cpp 1.7.5, `base.en` model, Metal GPU |
+| Date | 2026-10-11 |
 
-Memory: about 210 MB idle. CPU: 0 % idle. All numbers and the test method are in [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
+Time from the end of your speech to the finished text. We ran each clip 5 times.
+
+| Speech length | Words | Time (median) | Range | Faster than real time |
+|---|---|---|---|---|
+| 2.5 s | 9 | **205 ms** | 198 to 213 ms | 12 times |
+| 7.3 s | 26 | **307 ms** | 304 to 312 ms | 24 times |
+| 20.9 s | 78 | **616 ms** | 573 to 657 ms | 34 times |
+
+| Resource | Value |
+|---|---|
+| Memory while idle | about 210 MB |
+| Memory peak while transcribing | 238 to 250 MB |
+| CPU while idle | 0.0 % |
+| Model load at launch | 130 to 230 ms (one time) |
+| App size | 146 MB (zip: 129 MB) |
+
+murmur does not record and does not run the model when you are idle.
+
+Limits of this test:
+
+- The word count matched the script on all 3 clips. This is not a full accuracy test.
+- The clips use a synthetic macOS voice. Real speech, noise and accents can change the accuracy.
+- The numbers cover the model only. We did not measure microphone launch or paste time.
+- We tested one machine on mains power. We did not test battery use.
+
+Run the test yourself with `./build.sh` and then `scripts/benchmark.sh`. More detail: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
 ## Install
 
