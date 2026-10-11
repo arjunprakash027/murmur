@@ -1,3 +1,16 @@
 .build
 murmur.app
 .worktrees/
+
+# personal planning and tooling, not part of the product
+murmur-plan.tldraw
+notes/
+tools/
+SPEC.md
+PLAN.md
+CLAUDE.md
+# downloaded by scripts/fetch-deps.sh
+vendor/
+models/
+# build output
+dist/

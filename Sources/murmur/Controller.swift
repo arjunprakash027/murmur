@@ -12,7 +12,7 @@ final class Controller {
     private(set) var modelLoaded = false
 
     func start() {
-        let model = Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("models/ggml-base.en.bin").path
+        let model = Transcriber.defaultModelPath
         queue.async { self.transcriber.load(path: model); self.modelLoaded = self.transcriber.isLoaded; print("controller: model loaded=\(self.modelLoaded)") }
         Hotkey.install { [weak self] in self?.toggle() }
     }

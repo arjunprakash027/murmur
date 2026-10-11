@@ -33,6 +33,13 @@ for b in "$BIN_DIR"/*.bundle; do
   [ -e "$b" ] && cp -R "$b" "$APP/Contents/Resources/"
 done
 
+# bundle the speech model so the app is self-contained
+if [ -f models/ggml-base.en.bin ]; then
+  cp models/ggml-base.en.bin "$APP/Contents/Resources/"
+else
+  echo "warning: models/ggml-base.en.bin missing, app will not find a model (run scripts/fetch-deps.sh)" >&2
+fi
+
 # embed whisper framework
 FW_SRC=vendor/xcframework/unpacked/build-apple/whisper.xcframework/macos-arm64_x86_64/whisper.framework
 cp -R "$FW_SRC" "$APP/Contents/Frameworks/"
@@ -42,3 +49,13 @@ fi
 
 codesign --force --deep -s murmur-dev "$APP"
 echo "$(pwd)/$APP"
+
+# ./build.sh --dist  ->  dist/murmur-<version>-arm64.zip (ready to share)
+if [ "${1:-}" = "--dist" ]; then
+  mkdir -p dist
+  VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$APP/Contents/Info.plist")
+  OUT="dist/murmur-$VERSION-arm64.zip"
+  rm -f "$OUT"
+  ditto -c -k --norsrc --noextattr --keepParent "$APP" "$OUT"
+  echo "$(pwd)/$OUT"
+fi

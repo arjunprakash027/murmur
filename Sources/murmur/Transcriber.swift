@@ -2,6 +2,12 @@ import Foundation
 import whisper
 
 final class Transcriber {
+    /// Model inside the app bundle (distributed build), else models/ next to the .app (dev build).
+    static var defaultModelPath: String {
+        if let bundled = Bundle.main.url(forResource: "ggml-base.en", withExtension: "bin") { return bundled.path }
+        return Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("models/ggml-base.en.bin").path
+    }
+
     private var context: OpaquePointer?
     var isLoaded: Bool { context != nil }
 
@@ -74,7 +80,7 @@ final class Transcriber {
             return
         }
         let transcriber = Transcriber()
-        transcriber.load(path: "models/ggml-base.en.bin")
+        transcriber.load(path: defaultModelPath)
         let start = Date()
         let text = transcriber.transcribe(pcm)
         print("\(text)\n\(Int(Date().timeIntervalSince(start) * 1000)) ms")
