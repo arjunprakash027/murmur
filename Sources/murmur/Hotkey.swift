@@ -1,8 +1,11 @@
-import Foundation
+import KeyboardShortcuts
+
+extension KeyboardShortcuts.Name {
+    static let toggle = Self("toggle", default: .init(.space, modifiers: [.control, .option]))
+}
 
 final class Hotkey {
     static func install(onToggle: @escaping () -> Void) {
-        // TODO: KeyboardShortcuts toggle
-        print("hotkey: install (stub)")
+        KeyboardShortcuts.onKeyDown(for: .toggle, action: onToggle)
     }
 }
