@@ -18,6 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
+setvbuf(stdout, nil, _IONBF, 0)
 if Transcriber.run(args: CommandLine.arguments) { exit(0) }
 
 let app = NSApplication.shared

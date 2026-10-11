@@ -28,11 +28,11 @@ final class Paster {
         }
         let ourCount = pb.changeCount
 
-        if !(isEditable() && postCmdV()) && !setSelectedText(text) {
-            _ = postCmdV()
-        }
+        let posted = postCmdV()
+        print("paster: posted Cmd+V=\(posted), focus editable=\(isEditable())")
+        if !posted { print("paster: AX fallback=\(setSelectedText(text))") }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             guard pb.changeCount == ourCount else { return }
             pb.clearContents()
             pb.writeObjects(snapshot.map { entries in
@@ -70,6 +70,7 @@ final class Paster {
         down.flags = .maskCommand
         up.flags = .maskCommand
         down.post(tap: .cghidEventTap)
+        usleep(20_000)
         up.post(tap: .cghidEventTap)
         return true
     }
