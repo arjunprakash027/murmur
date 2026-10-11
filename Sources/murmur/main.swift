@@ -10,9 +10,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "Quit murmur", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
+        controller.onState = { [weak self] state in
+            let name = ["idle": "mic", "recording": "mic.fill", "transcribing": "ellipsis.circle"]["\(state)"] ?? "mic"
+            self?.statusItem.button?.image = NSImage(systemSymbolName: name, accessibilityDescription: "murmur")
+        }
         controller.start()
     }
 }
+
+if Transcriber.run(args: CommandLine.arguments) { exit(0) }
 
 let app = NSApplication.shared
 let delegate = AppDelegate()
