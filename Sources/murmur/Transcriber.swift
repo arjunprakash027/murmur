@@ -47,13 +47,13 @@ final class Transcriber {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    static func selfTest(wavPath: String) {
+    static func readWAV(_ wavPath: String) -> [Float]? {
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: wavPath)),
               data.count >= 44,
               String(data: data[0..<4], encoding: .ascii) == "RIFF",
               String(data: data[8..<12], encoding: .ascii) == "WAVE" else {
             fputs("transcriber: invalid WAV\n", stderr)
-            return
+            return nil
         }
         func u16(_ i: Int) -> Int { Int(data[i]) | Int(data[i + 1]) << 8 }
         func u32(_ i: Int) -> Int { u16(i) | u16(i + 2) << 16 }
@@ -77,8 +77,13 @@ final class Transcriber {
         }
         guard validFormat, !pcm.isEmpty else {
             fputs("transcriber: expected 16 kHz mono 16-bit PCM WAV\n", stderr)
-            return
+            return nil
         }
+        return pcm
+    }
+
+    static func selfTest(wavPath: String) {
+        guard let pcm = readWAV(wavPath) else { return }
         let transcriber = Transcriber()
         transcriber.load(path: defaultModelPath)
         let start = Date()
@@ -86,7 +91,25 @@ final class Transcriber {
         print("\(text)\n\(Int(Date().timeIntervalSince(start) * 1000)) ms")
     }
 
+    /// `--bench file.wav [runs]`: prints model load time and each transcription time.
+    static func bench(wavPath: String, runs: Int) {
+        guard let pcm = readWAV(wavPath) else { return }
+        let transcriber = Transcriber()
+        let t0 = Date()
+        transcriber.load(path: defaultModelPath)
+        print("clip_seconds=\(String(format: "%.1f", Double(pcm.count) / 16000)) load_ms=\(Int(Date().timeIntervalSince(t0) * 1000))")
+        for i in 1...runs {
+            let s = Date()
+            let text = transcriber.transcribe(pcm)
+            print("run\(i)_ms=\(Int(Date().timeIntervalSince(s) * 1000)) words=\(text.split(separator: " ").count)")
+        }
+    }
+
     static func run(args: [String]) -> Bool {
+        if let i = args.firstIndex(of: "--bench"), i + 1 < args.count {
+            bench(wavPath: args[i + 1], runs: i + 2 < args.count ? Int(args[i + 2]) ?? 5 : 5)
+            return true
+        }
         guard let index = args.firstIndex(of: "--transcribe") else { return false }
         guard index + 1 < args.count else {
             fputs("usage: --transcribe file.wav\n", stderr)

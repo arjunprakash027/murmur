@@ -16,6 +16,18 @@ flowchart LR
 
 More diagrams: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## Speed
+
+Tested on a base MacBook Air M1 with 8 GB of RAM. The model runs on the GPU.
+
+| Speech length | Time to text |
+|---|---|
+| 2.5 s | 205 ms |
+| 7.3 s | 307 ms |
+| 20.9 s | 616 ms |
+
+Memory: about 210 MB idle. CPU: 0 % idle. All numbers and the test method are in [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
+
 ## Install
 
 You need an Apple Silicon Mac with macOS 14 or newer.
@@ -50,6 +62,7 @@ You need the Xcode Command Line Tools. You do not need full Xcode.
 
 ## More
 
+- [Performance numbers](docs/PERFORMANCE.md)
 - [Architecture diagrams](docs/ARCHITECTURE.md)
 - [How we built it](docs/HOW_IT_WAS_BUILT.md)
 - [Guide for AI agents](AGENTS.md)
