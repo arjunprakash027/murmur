@@ -1,6 +1,41 @@
 # Architecture
 
-## System
+## The whole idea
+
+```mermaid
+flowchart LR
+  A["1. You press<br/>the hotkey"] --> B["2. murmur listens<br/>to your voice"]
+  B --> C["3. You press<br/>the hotkey again"]
+  C --> D["4. The model on your Mac<br/>turns speech into text"]
+  D --> E["5. The text appears<br/>where your cursor is"]
+```
+
+Everything runs on your Mac. No audio goes to the internet.
+
+## What the small pill shows
+
+```mermaid
+flowchart LR
+  I["Waiting"] -->|hotkey| L["Listening<br/>(red voice bars)"]
+  L -->|hotkey| T["Transcribing<br/>(yellow dot)"]
+  T --> P["Pasted<br/>(green dot)"]
+  P --> I
+```
+
+## The parts inside
+
+```mermaid
+flowchart LR
+  K["Hotkey"] --> C["Controller"]
+  C --> M["Microphone recorder"]
+  M --> W["Speech model<br/>(whisper.cpp)"]
+  W --> P["Paste"]
+```
+
+<details>
+<summary>More detail for developers</summary>
+
+### System
 
 ```mermaid
 flowchart LR
@@ -33,7 +68,7 @@ flowchart LR
   CT -->|state| MN
 ```
 
-## One dictation
+### One dictation
 
 ```mermaid
 sequenceDiagram
@@ -68,7 +103,7 @@ sequenceDiagram
   C->>D: Pasted
 ```
 
-## States
+### States
 
 ```mermaid
 stateDiagram-v2
@@ -80,7 +115,7 @@ stateDiagram-v2
   Transcribing --> Idle: no text
 ```
 
-## Build and release
+### Build and release
 
 ```mermaid
 flowchart LR
@@ -95,7 +130,7 @@ flowchart LR
   REL --> USER(["User: unzip, Open"])
 ```
 
-## Permissions
+### Permissions
 
 ```mermaid
 flowchart LR
@@ -103,3 +138,5 @@ flowchart LR
   AXP["Accessibility"] --> PS["Paster: post Cmd+V"]
   NOP["No permission"] --> HK["Hotkey (Carbon)"]
 ```
+
+</details>

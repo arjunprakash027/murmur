@@ -8,33 +8,10 @@ Press a hotkey. Speak. Press the hotkey again. The app pastes the text at your c
 
 ```mermaid
 flowchart LR
-  subgraph APP["murmur.app (one Swift process)"]
-    HK["Hotkey<br/>KeyboardShortcuts<br/>Ctrl+Option+Space"]
-    CT["Controller<br/>idle / recording / transcribing"]
-    RC["Recorder<br/>AVAudioEngine tap<br/>to 16 kHz mono Float32"]
-    TR["Transcriber<br/>whisper.cpp base.en<br/>Metal GPU"]
-    PS["Paster<br/>clipboard + Cmd+V<br/>restore clipboard"]
-    HD["HUD pill<br/>voice bars / state"]
-    MN["Menu-bar icon<br/>permission checklist"]
-  end
-  MIC(["Microphone"])
-  MODEL[("ggml-base.en.bin<br/>inside app bundle")]
-  TGT(["Focused app<br/>text at cursor"])
-  USER(["You"])
-
-  USER -->|press key| HK
-  HK -->|toggle| CT
-  CT -->|start / stop| RC
-  MIC -->|audio| RC
-  RC -->|level| HD
-  RC -->|samples| CT
-  CT -->|samples| TR
-  MODEL -->|loaded at launch| TR
-  TR -->|text| CT
-  CT -->|text| PS
-  PS -->|Cmd+V| TGT
-  CT -->|state| HD
-  CT -->|state| MN
+  A["1. You press<br/>the hotkey"] --> B["2. murmur listens<br/>to your voice"]
+  B --> C["3. You press<br/>the hotkey again"]
+  C --> D["4. The model on your Mac<br/>turns speech into text"]
+  D --> E["5. The text appears<br/>where your cursor is"]
 ```
 
 More diagrams: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
