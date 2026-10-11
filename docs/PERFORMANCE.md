@@ -42,7 +42,7 @@ murmur does not record and does not run the model when you are idle. The CPU sta
 
 - All 3 test clips came back with the same word count as the script (9, 26 and 78 words).
 - The test clips use a synthetic macOS voice. Real speech, background noise and accents can change the accuracy.
-- The numbers cover the model only. We did not measure microphone start-up or paste time.
+- The numbers cover the model only. We did not measure microphone launch or paste time.
 - We tested one machine on mains power. We did not test battery use.
 
 ## Run the test yourself
