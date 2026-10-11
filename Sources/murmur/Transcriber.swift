@@ -3,6 +3,7 @@ import whisper
 
 final class Transcriber {
     private var context: OpaquePointer?
+    var isLoaded: Bool { context != nil }
 
     deinit {
         if let context { whisper_free(context) }

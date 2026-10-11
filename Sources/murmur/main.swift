@@ -1,6 +1,7 @@
 import AppKit
+import AVFoundation
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var statusItem: NSStatusItem!
     let controller = Controller()
 
@@ -8,6 +9,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.button?.image = NSImage(systemSymbolName: "mic", accessibilityDescription: "murmur")
         let menu = NSMenu()
+        menu.delegate = self
+        for _ in 0..<3 { let i = NSMenuItem(title: "", action: nil, keyEquivalent: ""); i.isEnabled = false; menu.addItem(i) }
+        menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit murmur", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
         controller.onState = { [weak self] state in
@@ -15,6 +19,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.statusItem.button?.image = NSImage(systemSymbolName: name, accessibilityDescription: "murmur")
         }
         controller.start()
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        let mic = AVCaptureDevice.authorizationStatus(for: .audio) == .authorized
+        let ax = AXIsProcessTrusted()
+        menu.items[0].title = (mic ? "✓" : "✗") + " Microphone permission"
+        menu.items[1].title = (ax ? "✓" : "✗") + " Accessibility permission (paste)"
+        menu.items[2].title = (controller.modelLoaded ? "✓" : "…") + " Model loaded (whisper base.en)"
     }
 }
 
